@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>JSXGraph template</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <link href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" rel="stylesheet" type="text/css" />
+	<link href="style.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js" type="text/javascript" charset="UTF-8"></script>
+    <!-- The next line is optional: MathJax -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+  </head>
+  <body> 
+	<button onclick="myFunction()">Click me</button>
+
+	<div class="flex-container">
+		<div id="sidepanel" style="flex-basis:400px"><form>
+			<input type="text" id="fname" name="fname" placeholder="Input...">
+			<input type="text" id="lname" name="lname" placeholder="Input...">
+		  </form>
+		</div>
+
+  		<div id="jxgbox" class="jxgbox" style="height:900px;width: 1500px;"></div>
+	</div>
+
+
+
+
+  <script>
+
+
+
+
+// checkbox visibility on hover creation
+
+var checkbox = document.createElement("input");
+var span = document.createElement("span");
+var br = document.createElement("br");
+checkbox.setAttribute("type","checkbox");
+span.innerHTML = `Visible on hover`;
+document.body.appendChild(span);
+document.body.appendChild(checkbox);
+document.body.appendChild(br);
+
+checkbox.addEventListener("change",graphHoverVisibility);
+
+
+
+//const creations
+
+var functionArr = [];
+var labelArr = [];
+var selected = false;
+
+
+var board = JXG.JSXGraph.initBoard('jxgbox', {
+		        boundingbox: [-8, 8, 8, -8],
+		        keepaspectratio: false,
+		        axis: false,
+				needsRegularUpdate:true
+		    });
+			
+
+        var box = [-5, 5];
+		    var view = board.create('view3d',
+		        [
+		            [-6, -3], [8, 8],
+		            [box, box, box]
+		        ],
+		        {	needsRegularUpdate:true,
+		            xPlaneRear: {visible: false},
+		            yPlaneRear: {visible: false}
+		        });
+
+		    //graph F
+			var FExpr = '0';
+			
+			var F = board.jc.snippet(FExpr, true, 'x,y', true);  // JessieCode parsing
+					    // 3D surface
+			var FGraph = view.create('functiongraph3d', [
+		        F,
+		        box, // () => [-s.Value()*5, s.Value() * 5],
+		        box, // () => [-s.Value()*5, s.Value() * 5],
+		    ], { strokeWidth: 0.5, stepsU: 70, stepsV: 70});
+			
+			functionArr.push(FGraph);
+			FGraph.setLabel(FExpr);
+			labelArr.push(FExpr);
+
+
+			//graph Fx
+			var FxExpr = 'x*y';
+			var Fx = board.jc.snippet(FxExpr, true, 'x,y', true);  // JessieCode parsing
+					    // 3D surface
+			var FxGraph = view.create('functiongraph3d', [
+		        Fx,
+		        box, // () => [-s.Value()*5, s.Value() * 5],
+		        box, // () => [-s.Value()*5, s.Value() * 5],
+		    ], { strokeWidth: 0.5, stepsU: 70, stepsV: 70,color:'blue'});
+			
+			functionArr.push(FxGraph);
+			FxGraph.setLabel(FxExpr);
+			labelArr.push(FxExpr);
+
+		
+		
+// graph Fxy
+var FxyExpr = 'x^2*y';
+			
+			var Fxy = board.jc.snippet(FxyExpr, true, 'x,y', true);  // JessieCode parsing
+					    // 3D surface
+			var FxyGraph = view.create('functiongraph3d', [
+		        Fxy,
+		        box,
+		        box, 
+		    ], { strokeWidth: 0.5, stepsU: 70, stepsV: 70});
+
+			functionArr.push(FxyGraph);
+			FxyGraph.setLabel(FxyExpr);
+			labelArr.push(FxyExpr);
+
+
+
+/* create checkbox for every function3d .
+the 'advantage' of lack of element tracing is 
+i know in which order i created the graphs
+*/
+for(var i = 0; i <functionArr.length;i++) {
+	var input = document.createElement("input");
+	var span = document.createElement("span");
+	var br = document.createElement("br");
+
+
+	input.setAttribute("type","checkbox");
+	input.setAttribute("class","graphToggle");
+	span.innerHTML = `hide/show ${labelArr[i]}:`;
+	document.body.appendChild(span);
+	document.body.appendChild(input);
+	document.body.appendChild(br);
+
+	input.addEventListener("change",graphSelectVisibility);
+	
+}
+
+/* on/off graph toggle*/
+
+function graphSelectVisibility() {
+	
+	var input = document.getElementsByClassName('graphToggle');
+	for(var i =0; i < functionArr.length;i++){
+		if(input[i].checked == true) {
+		functionArr[i].setAttribute({visible:false});
+		} else {
+			functionArr[i].setAttribute({visible:true});
+		}
+	}
+}
+
+FxGraph.setAttribute({highlightStrokeColor:'#f5ad42'});
+FGraph.setAttribute({highlightStrokeColor:'#00ccff'})
+
+
+/*this function hides all other graphs
+*/
+function selectedGraph(graph) {
+	graph.on('mouseover', function(e){ 
+				if(!selected) {
+				if (checkbox.checked ===false) {
+					selected = true;
+					
+				if(graph.getAttribute(highlight) == true) {
+					for(var i =0; i< functionArr.length; i++) {
+						functionArr[i]
+				}
+				} 				
+				
+			}else {
+			graph.setAttribute({highlight:true});
+			for(var i =0; i< functionArr.length; i++) {
+						functionArr[i].setAttribute({visible:false});
+				}
+
+			graph.setAttribute({visible:true});
+
+
+			graph.on('mouseout', function(e){
+	for(var i =0; i< functionArr.length; i++) {
+						functionArr[i].setAttribute({visible:true});
+				}
+			selected = false;
+			});
+		}
+
+		}
+	});
+	
+}
+
+
+function graphHoverVisibility() {
+
+if (checkbox.checked ===true) {
+
+	for(var c =0; c< functionArr.length; c++) {
+		selectedGraph(functionArr[c]);
+	}
+}//end if
+}//end functionvisibility
+
+
+
+  </script>
+
+  </body>
+</html>

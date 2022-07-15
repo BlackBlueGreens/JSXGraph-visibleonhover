@@ -1,0 +1,51 @@
+#sidepanel {
+    background-color: white;
+    border: solid 1px #DCDCDC;
+    border-left-color: #555;
+    border-bottom-color: #555;
+
+    border-radius: 3px;
+    
+}
+.flex-container {
+    display: flex;
+    align-items: stretch;
+    background-color: #f1f1f1;
+  }
+  
+  .flex-container > div {
+    background-color: lightgray;
+    color: white;
+    width: 100px;
+    margin-left: 5px;
+
+    text-align: center;
+    line-height: 10px;
+    font-size: 30px;
+  }
+  input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    height:48px;
+    box-sizing: border-box;
+    border-top: 1px solid #555;
+    outline: none;
+    border:none;
+    border-top: 1px solid  #DCDCDC;
+    border-bottom: 1px solid #DCDCDC;
+  }
+  
+  input[type=text]:focus {
+    border-color:#6557D2
+  }
+
+  input,
+input::placeholder {
+    font: 14px/3 sans-serif;
+}
+
+input {
+color: black;
+font: 16px/3 sans-serif;
+
+}
